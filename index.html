@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>明朝那些事儿 · 明代历史沉浸式阅读</title>
-<meta name="description" content="以《明朝那些事儿》的历史脉络为蓝本，用原创文字重述明代二百七十六年：八卷、十六篇长文、五十余位人物档案、六个背景专题。">
+<meta name="description" content="以《明朝那些事儿》的历史脉络为蓝本，用原创文字重述明代二百七十六年：八卷、二十六篇长文、六十余位人物档案、六个背景专题。">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/css/base.css">
 <link rel="stylesheet" href="assets/css/pages.css">
@@ -59,7 +59,7 @@
   <section class="tl-mini wrap">
     <div class="sec-head reveal">
       <h2 class="sec-title">一线之年<small>KEY MOMENTS</small></h2>
-      <a class="sec-more" href="timeline.html">展开全部 59 条</a>
+      <a class="sec-more" href="timeline.html">展开全部 64 条</a>
     </div>
     <div class="tl-rail" id="tlRail"></div>
   </section>
@@ -95,10 +95,15 @@
 
 <script src="assets/js/data/volumes.js"></script>
 <script src="assets/js/data/people.js"></script>
+<script src="assets/js/data/people-ext.js"></script>
 <script src="assets/js/data/topics.js"></script>
 <script src="assets/js/data/chapters-1.js"></script>
 <script src="assets/js/data/chapters-2.js"></script>
 <script src="assets/js/data/chapters-3.js"></script>
+<script src="assets/js/data/chapters-4.js"></script>
+<script src="assets/js/data/chapters-5.js"></script>
+<script src="assets/js/data/chapters-6.js"></script>
+<script src="assets/js/data/chapters-7.js"></script>
 <script src="assets/js/core.js"></script>
 <script>
 (function(){
@@ -113,7 +118,7 @@
     ['276', '年 · 明朝国祚'],
     ['16', '位皇帝'],
     ['8', '卷历史长卷'],
-    ['54', '位人物档案'],
+    [String(M.people.length), '位人物档案'],
   ].map(([n, l]) => `<div class="stat-cell"><div class="stat-num">${n}</div><div class="stat-lab">${l}</div></div>`).join('');
 
   /* 引言 */

@@ -6,7 +6,7 @@ window.MING = window.MING || {};
 MING.chapters = (MING.chapters || []).concat([
 
   {
-    id: 'ch12', vol: 'v4', no: 12,
+    id: 'ch12', vol: 'v4', no: 14,
     title: '豹房与心学：正德朝的权力游戏',
     subtitle: '一个不想当皇帝的皇帝，遇上一群不允许他胡来的大臣。',
     years: '1505 — 1521',
@@ -50,9 +50,9 @@ MING.chapters = (MING.chapters || []).concat([
   },
 
   {
-    id: 'ch13', vol: 'v5', no: 13,
-    title: '大礼议与倭患：嘉靖朝的四十五年',
-    subtitle: '一个十五岁的少年，用一场关于称呼的争论，驯服了整个文官集团。',
+    id: 'ch13', vol: 'v5', no: 15,
+    title: '嘉靖四十五年：西苑里的皇帝',
+    subtitle: '四十五年不上朝，帝国照样运转——直到它转不动。',
     years: '1521 — 1566',
     lead: '嘉靖朝有两个战场：一个在左顺门的石阶上，一个在东南沿海的滩涂上。前一个决定了谁说了算，后一个决定了帝国还能不能守住自己的海岸线。',
     minutes: 16, tags: ['大礼议', '严嵩', '戚继光', '倭寇', '海瑞'],
@@ -102,7 +102,7 @@ MING.chapters = (MING.chapters || []).concat([
   },
 
   {
-    id: 'ch14', vol: 'v6', no: 14,
+    id: 'ch14', vol: 'v6', no: 19,
     title: '张居正的十年与万历的四十八年',
     subtitle: '一个人替帝国续命十年，一个皇帝用三十八年把它耗光。',
     years: '1567 — 1620',
@@ -160,7 +160,7 @@ MING.chapters = (MING.chapters || []).concat([
   },
 
   {
-    id: 'ch15', vol: 'v7', no: 15,
+    id: 'ch15', vol: 'v7', no: 22,
     title: '从东林到煤山',
     subtitle: '十七年换了五十个大学士，也没能换来一个可以商量的人。',
     years: '1620 — 1644',
@@ -213,7 +213,7 @@ MING.chapters = (MING.chapters || []).concat([
   },
 
   {
-    id: 'ch16', vol: 'v8', no: 16,
+    id: 'ch16', vol: 'v8', no: 25,
     title: '南明十八年：弘光、隆武、永历',
     subtitle: '南京有一套完整的朝廷、半壁江山的赋税、上百万的军队。它只存在了十八年。',
     years: '1644 — 1662',
