@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>明朝那些事儿 · 明代历史沉浸式阅读</title>
+<meta name="description" content="以《明朝那些事儿》的历史脉络为蓝本，用原创文字重述明代二百七十六年：八卷、十六篇长文、五十余位人物档案、六个背景专题。">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+
+<main>
+  <!-- ============ 卷首 ============ -->
+  <section class="hero">
+    <div class="hero-ink" id="ink"></div>
+    <div class="hero-char">明</div>
+    <div class="hero-inner wrap">
+      <p class="hero-kicker">明史阅读 · 八卷 · 二百七十六年</p>
+      <h1 class="hero-title">明朝那些事儿</h1>
+      <p class="hero-years">1368 — 1644</p>
+      <p class="hero-sub">
+        一个饿过饭的和尚建立了它，一个不愿上朝的皇帝耗空了它，一个勤政到深夜的皇帝葬送了它。<br>
+        以<em>人物</em>为线索，以<em>事件</em>为骨架，从头读到尾，走完大明二百七十六年。
+      </p>
+      <div class="hero-actions">
+        <a class="btn" href="read.html?ch=ch01">开始阅读 · 卷一</a>
+        <a class="btn ghost" href="timeline.html">历史时间轴</a>
+      </div>
+    </div>
+    <div class="hero-seal">明</div>
+    <div class="hero-scroll">展卷</div>
+  </section>
+
+  <div class="stat-bar wrap" id="stats"></div>
+
+  <!-- ============ 引言 ============ -->
+  <section class="intro wrap">
+    <div class="intro-grid">
+      <div class="reveal">
+        <p class="intro-lead">读明史最容易犯的错，是把它读成一串<b>人名</b>和一串<b>年号</b>。</p>
+        <p class="intro-sig">大明长卷 · 卷首语</p>
+      </div>
+      <div class="intro-body reveal" id="introBody"></div>
+    </div>
+  </section>
+
+  <!-- ============ 八卷 ============ -->
+  <section class="vols wrap" id="volumes">
+    <div class="sec-head reveal">
+      <h2 class="sec-title">八卷长卷<small>EIGHT VOLUMES · 1368 — 1644</small></h2>
+      <a class="sec-more" href="timeline.html">看完整时间轴</a>
+    </div>
+  </section>
+  <div class="wrap" style="padding:0"><div class="vol-strip" id="volStrip"></div></div>
+
+  <!-- ============ 时间轴 ============ -->
+  <section class="tl-mini wrap">
+    <div class="sec-head reveal">
+      <h2 class="sec-title">一线之年<small>KEY MOMENTS</small></h2>
+      <a class="sec-more" href="timeline.html">展开全部 59 条</a>
+    </div>
+    <div class="tl-rail" id="tlRail"></div>
+  </section>
+
+  <!-- ============ 继续阅读 ============ -->
+  <section class="wrap" style="padding-top:40px">
+    <div class="sec-head reveal">
+      <h2 class="sec-title">继续阅读<small>PICK UP WHERE YOU LEFT</small></h2>
+      <a class="sec-more" href="people.html">人物档案</a>
+    </div>
+    <div class="reveal" id="resumeBox"></div>
+    <div class="reveal" id="shelf" style="margin-top:14px"></div>
+  </section>
+
+  <!-- ============ 帝王 ============ -->
+  <section class="wrap" style="padding-top:52px">
+    <div class="sec-head reveal">
+      <h2 class="sec-title">十六帝<small>THE SIXTEEN EMPERORS</small></h2>
+      <a class="sec-more" href="people.html?cat=emperor">全部皇帝档案</a>
+    </div>
+    <div class="emp-row reveal" id="empRow"></div>
+  </section>
+
+  <!-- ============ 专题 ============ -->
+  <section class="wrap" style="padding-top:56px">
+    <div class="sec-head reveal">
+      <h2 class="sec-title">背景专题<small>CONTEXT & BACKGROUND</small></h2>
+      <a class="sec-more" href="topics.html">全部六个专题</a>
+    </div>
+    <div class="topic-grid reveal" id="topicGrid"></div>
+  </section>
+</main>
+
+<script src="assets/js/data/volumes.js"></script>
+<script src="assets/js/data/people.js"></script>
+<script src="assets/js/data/topics.js"></script>
+<script src="assets/js/data/chapters-1.js"></script>
+<script src="assets/js/data/chapters-2.js"></script>
+<script src="assets/js/data/chapters-3.js"></script>
+<script src="assets/js/core.js"></script>
+<script>
+(function(){
+  const M = window.MING, $ = s => document.querySelector(s);
+  M.chrome('home');
+  M.reader.apply();
+
+  $('#ink').innerHTML = M.inkLandscape();
+
+  /* 数据条 */
+  $('#stats').innerHTML = [
+    ['276', '年 · 明朝国祚'],
+    ['16', '位皇帝'],
+    ['8', '卷历史长卷'],
+    ['54', '位人物档案'],
+  ].map(([n, l]) => `<div class="stat-cell"><div class="stat-num">${n}</div><div class="stat-lab">${l}</div></div>`).join('');
+
+  /* 引言 */
+  $('#introBody').innerHTML = `
+    <p>《明朝那些事儿》最了不起的地方，是把历史从"纪传体"里解放出来，变成一条有时间感、有人物动机、有因果链条的叙事。但它也太长了——长到许多人读到嘉靖就停下了，而明朝最复杂的部分，恰恰在后半段。</p>
+    <p>这个阅读空间想做的事很简单：保留原著的叙事快感，同时把散落的人物、制度、战役重新编成一条可以走完的路。八个阶段，每个阶段有总纲、有正文、有人物、有专题；重要的转折不省略，争议的地方不装作没有争议。</p>
+    <p>所有正文都是重新写的。它参考了原著的历史脉络与叙事节奏，也参考了《明史》《明实录》与近年的明史研究；凡是作者推断、学界分歧或后世演绎之处，文中都会标出来。你可以把它当作原著的"导读与补全"，也可以当作一部独立的明史读物。</p>`;
+
+  /* 八卷 */
+  $('#volStrip').innerHTML = M.volumes.map(M.volCard).join('');
+
+  /* 时间轴 */
+  const pick = [1351, 1368, 1402, 1420, 1449, 1457, 1524, 1561, 1581, 1619, 1644, 1662];
+  const rail = pick.map(y => {
+    const evs = M.timeline.filter(t => t.y === y);
+    if (!evs.length) return '';
+    return `<a class="tl-node" href="timeline.html">
+      <div class="tl-year">${y}</div>
+      <div class="tl-dot"></div>
+      <div class="tl-txt">${M.esc(evs[0].t)}</div>
+    </a>`;
+  }).join('');
+  $('#tlRail').innerHTML = rail;
+
+  /* 继续阅读 */
+  const last = M.pos.last();
+  const box = $('#resumeBox');
+  if (last && M.chapter(last.id)) {
+    const c = M.chapter(last.id), v = M.vol(c.vol), r = Math.round(M.pos.get(c.id) * 100);
+    box.innerHTML = `<div class="resume">
+      <span class="kicker">上次读到</span>
+      <h3 class="resume-ch">${M.esc(c.title)}</h3>
+      <div class="resume-meta"><span>${v.no} · ${v.title}</span><span>${c.years}</span><span>已读 ${r}%</span><span>${M.fmtDate(last.t)}</span></div>
+      <div class="resume-bar"><i style="width:${Math.max(2, r)}%"></i></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <a class="btn sm" href="read.html?ch=${c.id}">${r > 1 ? '接着读' : '开始读'}</a>
+        <a class="btn ghost sm" href="read.html?ch=${c.id}&from=top">从头读</a>
+        <span style="font-size:11.5px;color:var(--ink-4);letter-spacing:.06em">阅读位置与书签保存在本机</span>
+      </div>
+    </div>`;
+  } else {
+    box.innerHTML = `<div class="resume"><div class="resume-empty">
+      <span class="kicker">还没有开始</span>
+      <h3 class="resume-ch">从一只独眼石人开始</h3>
+      <p style="font-size:13.5px;line-height:2;color:var(--ink-3);max-width:36em;margin:0">
+        至正十一年，黄河工地上挖出一个石人，天下就此大乱。建议从卷一第一篇读起，大约十二分钟。</p>
+      <a class="btn sm" href="read.html?ch=ch01" style="margin-top:6px">读第一篇</a>
+    </div></div>`;
+  }
+
+  /* 书架：收藏、书签与足迹 */
+  const favs = M.fav.all().filter(id => M.chapter(id)).slice(0, 6);
+  const marks = M.mark.all().filter(m => M.chapter(m.id)).slice(0, 4);
+  const hist = M.pos.hist().filter(h => M.chapter(h.id)).slice(0, 5);
+  const shelf = $('#shelf');
+  if (favs.length || marks.length || hist.length > 1) {
+    shelf.innerHTML = `
+      ${favs.length ? `<div style="margin-bottom:16px">
+        <div style="font-size:11px;letter-spacing:.2em;color:var(--ink-4);margin-bottom:9px">收藏的篇目</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          ${favs.map(id => { const c = M.chapter(id); return `<a class="chip" href="read.html?ch=${c.id}">
+            <span style="color:var(--zhu);margin-right:6px">▮</span>${M.esc(c.title)}</a>`; }).join('')}
+        </div></div>` : ''}
+      ${marks.length ? `<div style="margin-bottom:16px">
+        <div style="font-size:11px;letter-spacing:.2em;color:var(--ink-4);margin-bottom:9px">书签</div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          ${marks.map(m => { const c = M.chapter(m.id); return `<a href="read.html?ch=${c.id}" style="display:flex;gap:10px;align-items:baseline;padding:9px 12px;border:1px solid var(--line-2);border-radius:2px;background:var(--card)">
+            <span style="font-size:10.5px;color:var(--gold);letter-spacing:.08em;white-space:nowrap">${M.esc(c.title)}</span>
+            <span style="font-size:11.5px;color:var(--ink-4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${M.esc(m.text || '')}</span></a>`; }).join('')}
+        </div></div>` : ''}
+      ${hist.length > 1 ? `<div>
+        <div style="font-size:11px;letter-spacing:.2em;color:var(--ink-4);margin-bottom:9px">阅读足迹</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap">
+          ${hist.map(h => { const c = M.chapter(h.id); return `<a href="read.html?ch=${c.id}" style="font-size:12px;color:var(--ink-3);border-bottom:1px dotted var(--line)">
+            ${M.esc(c.title)} <span style="color:var(--ink-4);font-size:10.5px">${M.fmtDate(h.t)}</span></a>`; }).join('')}
+        </div></div>` : ''}`;
+  }
+
+  /* 十六帝 */
+  const EMP = [
+    ['zhuyuanzhang', '太祖', '洪武 1368—1398'],
+    ['zhuyunwen', '惠帝', '建文 1398—1402'],
+    ['zhudi', '成祖', '永乐 1402—1424'],
+    ['zhugaochi', '仁宗', '洪熙 1424—1425'],
+    ['zhuzhanji', '宣宗', '宣德 1425—1435'],
+    ['zhuqizhen', '英宗', '正统·天顺'],
+    ['zhubianyu', '代宗', '景泰 1449—1457'],
+    ['zhujianshen', '宪宗', '成化 1464—1487'],
+    ['zhuyoutang', '孝宗', '弘治 1487—1505'],
+    ['zhuhouzhao', '武宗', '正德 1505—1521'],
+    ['zhuhouzhong', '世宗', '嘉靖 1521—1566'],
+    ['zhuzaihou', '穆宗', '隆庆 1566—1572'],
+    ['zhuyijun', '神宗', '万历 1572—1620'],
+    ['zhuyoujian', '思宗', '崇祯 1627—1644'],
+  ];
+  $('#empRow').innerHTML = EMP.map(([id, miao, reign]) => {
+    const p = M.person(id);
+    return `<a class="emp" href="person.html?id=${id}">
+      <span class="emp-seal">${p ? M.sealChar(p) : '明'}</span>
+      <span><span class="emp-name">${p ? p.name : '待补'} <span style="font-size:10.5px;color:var(--ink-4)">${miao}</span></span>
+      <span class="emp-meta">${reign}</span></span></a>`;
+  }).join('') + `<a class="emp pending" href="timeline.html">
+      <span class="emp-seal">＋</span>
+      <span><span class="emp-name">光宗 · 熹宗</span>
+      <span class="emp-meta">泰昌 1620 · 天启 1620—1627</span></span></a>`;
+
+  /* 专题 */
+  $('#topicGrid').innerHTML = M.topics.map(M.topicCard).join('');
+
+  M.reveal();
+})();
+</script>
+</body>
+</html>

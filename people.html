@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>人物档案 · 明朝那些事儿</title>
+<meta name="description" content="明代皇帝、文臣、宦官、将领、思想家与南明人物的档案：生平、政治立场、主要功绩、历史争议与最终结局。">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<main>
+  <section class="page-head">
+    <div class="wrap" style="position:relative">
+      <span class="mask-char">人</span>
+      <span class="kicker">人物 · DRAMATIS PERSONAE</span>
+      <h1>五十四个人，一部明史</h1>
+      <p>明史最难读的地方，是人物太多、关系太杂。这里把重要人物单独抽出，每一份档案都写清四件事：他站在哪一边，他做成了什么，他为什么失败，他最后怎么了。</p>
+    </div>
+  </section>
+
+  <section class="wrap" style="padding-top:26px">
+    <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+      <div class="p-filter" id="filter" style="margin:0"></div>
+      <div class="search-box">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+        <input type="search" id="q" placeholder="搜索姓名、身份或关键词" autocomplete="off">
+      </div>
+    </div>
+    <p style="font-size:11.5px;color:var(--ink-4);margin:14px 0 22px;letter-spacing:.04em" id="count"></p>
+    <div class="p-grid" id="grid"></div>
+    <div class="pending-note" style="margin-top:34px">
+      <b>关于人物视觉：</b>为避免虚构历史人物的真实面貌，本页不使用拟真肖像，而以「朱印名章」作为人物标识——印色按身份区分（皇帝、文臣、武将、宦官、思想家等）。明代确有传世帝后画像，但其真伪与绘制年代多有争议，故此处不作还原。
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/data/volumes.js"></script>
+<script src="assets/js/data/people.js"></script>
+<script src="assets/js/data/topics.js"></script>
+<script src="assets/js/data/chapters-1.js"></script>
+<script src="assets/js/data/chapters-2.js"></script>
+<script src="assets/js/data/chapters-3.js"></script>
+<script src="assets/js/core.js"></script>
+<script>
+(function(){
+  const M = window.MING, $ = s => document.querySelector(s);
+  M.chrome('people');
+
+  let cat = M.qs('cat') || 'all', q = '';
+
+  const cats = [{id:'all', name:'全部'}].concat(M.cats);
+  $('#filter').innerHTML = cats.map(c => `<button class="chip ${c.id===cat?'on':''}" data-cat="${c.id}">${c.name}</button>`).join('');
+
+  function render(){
+    let arr = M.people.slice();
+    if (cat !== 'all') arr = arr.filter(p => p.cat === cat);
+    if (q) {
+      const s = q.toLowerCase();
+      arr = arr.filter(p => (p.name + p.alias + p.title + p.brief + M.catName(p.cat)).toLowerCase().includes(s));
+    }
+    $('#count').textContent = `共 ${arr.length} 位${cat !== 'all' ? ' · ' + M.catName(cat) : ''}${q ? ' · 关键词「' + q + '」' : ''}`;
+    $('#grid').innerHTML = arr.length ? arr.map(M.personCard).join('')
+      : '<p style="color:var(--ink-4);font-size:13px;padding:20px 0">没有匹配的人物。</p>';
+  }
+  render();
+
+  $('#filter').addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    cat = b.dataset.cat;
+    document.querySelectorAll('#filter .chip').forEach(c => c.classList.toggle('on', c === b));
+    render();
+  });
+  let t;
+  $('#q').addEventListener('input', e => {
+    clearTimeout(t);
+    t = setTimeout(() => { q = e.target.value.trim(); render(); }, 160);
+  });
+  M.reveal();
+})();
+</script>
+</body>
+</html>

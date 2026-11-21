@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>人物档案 · 明朝那些事儿</title>
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<main id="main"></main>
+<script src="assets/js/data/volumes.js"></script>
+<script src="assets/js/data/people.js"></script>
+<script src="assets/js/data/topics.js"></script>
+<script src="assets/js/data/chapters-1.js"></script>
+<script src="assets/js/data/chapters-2.js"></script>
+<script src="assets/js/data/chapters-3.js"></script>
+<script src="assets/js/core.js"></script>
+<script>
+(function(){
+  const M = window.MING, $ = s => document.querySelector(s);
+  M.chrome('people');
+
+  const p = M.person(M.qs('id') || 'zhuyuanzhang');
+  if (!p) { $('#main').innerHTML = '<div class="wrap" style="padding:80px 0">没有找到这份档案。<a href="people.html" style="color:var(--zhu)">返回人物库</a></div>'; return; }
+  document.title = p.name + ' · 人物档案 · 明朝那些事儿';
+
+  const idx = M.people.findIndex(x => x.id === p.id);
+  const prev = M.people[idx-1], next = M.people[idx+1];
+
+  $('#main').innerHTML = `
+  <section class="person-hero">
+    <div class="wrap">
+      <span class="big-char" style="right:2%;top:-40px;font-size:200px">${M.esc(M.sealChar(p))[0]}</span>
+      <div class="person-hero-inner">
+        <div>${M.sealFace(p, true)}</div>
+        <div style="flex:1;min-width:0">
+          <span class="kicker">${M.catName(p.cat)}</span>
+          <h1 class="person-h1">${M.esc(p.name)}</h1>
+          <div class="person-alias">${M.esc(p.alias || '')}</div>
+          <div class="person-tags">
+            <span class="tag">${M.esc(p.title)}</span>
+            ${p.reign ? `<span class="tag">${M.esc(p.reign)}</span>` : ''}
+          </div>
+          <dl class="person-life">
+            <div><dt>生 卒</dt><dd>${M.esc(p.life || '不详')}</dd></div>
+            <div><dt>身 份</dt><dd>${M.esc(p.title)}</dd></div>
+            <div><dt>分 类</dt><dd>${M.catName(p.cat)}</dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" style="padding-top:6px">
+    <div style="display:grid;grid-template-columns:1fr;max-width:var(--r-width);margin:0 auto">
+      <div class="p-body">
+        <p style="font-family:var(--serif);font-size:17px;line-height:2;color:var(--ink);letter-spacing:.02em">${M.esc(p.brief)}</p>
+        ${p.sections.map(s => `<h2>${M.esc(s.h)}</h2>${s.p.map(x => `<p>${M.autolink(x, {count:{}})}</p>`).join('')}`).join('')}
+        ${p.quote ? `<div class="p-quote">${M.esc(p.quote.t)}<cite>${M.esc(p.quote.c)}</cite></div>` : ''}
+      </div>
+    </div>
+
+    ${(p.rel && p.rel.length) ? `<div style="max-width:var(--r-width);margin:8px auto 0">
+      <h2 style="font-family:var(--serif);font-size:18px;letter-spacing:.1em;padding-left:12px;border-left:2px solid var(--zhu);margin:30px 0 6px">关系人物</h2>
+      <div class="rel-list">
+        ${p.rel.map(r => { const o = M.person(r.id); return o ? `<a class="rel" href="person.html?id=${o.id}"><i>${M.esc(M.sealChar(o))[0]}</i>${M.esc(o.name)} <em>${M.esc(r.l)}</em></a>` : ''; }).join('')}
+      </div>
+    </div>` : ''}
+
+    ${(p.chapters && p.chapters.length) ? `<div style="max-width:var(--r-width);margin:0 auto">
+      <h2 style="font-family:var(--serif);font-size:18px;letter-spacing:.1em;padding-left:12px;border-left:2px solid var(--zhu);margin:34px 0 14px">相关篇目</h2>
+      <div class="ch-list" style="border-top:0">
+        ${p.chapters.map(cid => { const c = M.chapter(cid); if (!c) return ''; const v = M.vol(c.vol);
+          return `<a class="ch-item" href="read.html?ch=${c.id}" style="padding:14px 4px">
+            <span class="ch-num" style="font-size:18px">${String(c.no).padStart(2,'0')}</span>
+            <span><span class="ch-t" style="font-size:15.5px">${M.esc(c.title)}</span>
+            <span class="ch-s">${v.no} · ${M.esc(v.title)} · ${c.years}</span></span>
+            <span class="ch-meta">${c.minutes} 分钟</span></a>`; }).join('')}
+      </div>
+    </div>` : ''}
+
+    <div class="pn-nav" style="max-width:var(--r-width);margin:34px auto 0">
+      ${prev ? `<a class="pn" href="person.html?id=${prev.id}"><span class="pn-dir">上一位</span><span class="pn-t">${M.esc(prev.name)}</span></a>` : '<span></span>'}
+      ${next ? `<a class="pn next" href="person.html?id=${next.id}"><span class="pn-dir">下一位</span><span class="pn-t">${M.esc(next.name)}</span></a>` : '<span></span>'}
+    </div>
+  </section>`;
+
+  M.reveal();
+})();
+</script>
+</body>
+</html>

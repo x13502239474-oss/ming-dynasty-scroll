@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>背景专题 · 明朝那些事儿</title>
+<meta name="description" content="制度、军事、经济、文化、外交与地图：六个背景专题，补上主线叙事里没有充分展开的部分。">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<main>
+  <section class="page-head">
+    <div class="wrap" style="position:relative">
+      <span class="mask-char">制</span>
+      <span class="kicker">专题 · CONTEXT</span>
+      <h1>故事背后的那套东西</h1>
+      <p>为什么朱元璋要废丞相？为什么张居正的改革必须靠宦官？为什么倭寇里有那么多中国人？主线里来不及解释的背景，都放在这里。</p>
+    </div>
+  </section>
+
+  <section class="wrap" style="padding-top:34px">
+    <div class="topic-grid" id="grid" style="grid-template-columns:repeat(2,1fr)"></div>
+    <div class="pending-note" style="margin-top:34px">
+      <b>使用建议：</b>专题与正文是双向链接的——读某一篇时，文末会列出相关专题；进入专题后，也能直接跳到具体篇目。第一次读明史，建议先看「政治制度」与「军事制度」两个，它们能解释后面大部分的冲突。
+    </div>
+  </section>
+
+  <section class="wrap" style="padding-top:46px">
+    <div class="sec-head"><h2 class="sec-title">专题之外<small>FURTHER READING</small></h2></div>
+    <div class="p-grid">
+      <a class="p-card" href="timeline.html"><div class="p-face"><span class="seal-face" style="background:var(--ink-3)">年</span></div>
+        <div><div class="p-name">年表</div><div class="p-title">59 个关键节点</div></div></a>
+      <a class="p-card" href="people.html"><div class="p-face"><span class="seal-face" style="background:var(--ink-3)">人</span></div>
+        <div><div class="p-name">人物库</div><div class="p-title">54 份档案</div></div></a>
+      <a class="p-card" href="volume.html?v=v1"><div class="p-face"><span class="seal-face" style="background:var(--ink-3)">卷</span></div>
+        <div><div class="p-name">八卷总纲</div><div class="p-title">按阶段读</div></div></a>
+      <a class="p-card" href="read.html?ch=ch01"><div class="p-face"><span class="seal-face" style="background:var(--ink-3)">读</span></div>
+        <div><div class="p-name">从第一篇开始</div><div class="p-title">至正年间</div></div></a>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/data/volumes.js"></script>
+<script src="assets/js/data/people.js"></script>
+<script src="assets/js/data/topics.js"></script>
+<script src="assets/js/data/chapters-1.js"></script>
+<script src="assets/js/data/chapters-2.js"></script>
+<script src="assets/js/data/chapters-3.js"></script>
+<script src="assets/js/core.js"></script>
+<script>
+(function(){
+  const M = window.MING;
+  M.chrome('topics');
+  document.querySelector('#grid').innerHTML = M.topics.map(M.topicCard).join('');
+  M.reveal();
+})();
+</script>
+</body>
+</html>

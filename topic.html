@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>专题 · 明朝那些事儿</title>
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<main id="main"></main>
+<script src="assets/js/data/volumes.js"></script>
+<script src="assets/js/data/people.js"></script>
+<script src="assets/js/data/topics.js"></script>
+<script src="assets/js/data/chapters-1.js"></script>
+<script src="assets/js/data/chapters-2.js"></script>
+<script src="assets/js/data/chapters-3.js"></script>
+<script src="assets/js/core.js"></script>
+<script>
+(function(){
+  const M = window.MING, $ = s => document.querySelector(s);
+  M.chrome('topics');
+
+  const t = M.topic(M.qs('id') || 't1');
+  if (!t) { $('#main').innerHTML = '<div class="wrap" style="padding:80px 0">没有找到这个专题。<a href="topics.html" style="color:var(--zhu)">返回专题列表</a></div>'; return; }
+  document.title = t.name + ' · 专题 · 明朝那些事儿';
+
+  const idx = M.topics.findIndex(x => x.id === t.id);
+  const prev = M.topics[idx-1], next = M.topics[idx+1];
+
+  function blocks(){
+    return t.blocks.map(b => {
+      if (b.t === 'h') return `<h2>${M.esc(b.x)}</h2>`;
+      if (b.t === 'h3') return `<h3>${M.esc(b.x)}</h3>`;
+      if (b.t === 'p') return `<p>${M.esc(b.x)}</p>`;
+      if (b.t === 'ul') return `<ul>${b.items.map(x => `<li>${M.esc(x)}</li>`).join('')}</ul>`;
+      if (b.t === 'table') return `<div style="overflow-x:auto"><table>
+        <thead><tr>${b.head.map(h=>`<th>${M.esc(h)}</th>`).join('')}</tr></thead>
+        <tbody>${b.rows.map(r=>`<tr>${r.map(c=>`<td>${M.esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+      if (b.t === 'map') return `<div class="map-box">${M.mingMap()}
+        <div class="map-cap">明代两京、九边与主要战场示意图（非精确疆域图，仅用于建立空间概念）</div></div>`;
+      return '';
+    }).join('');
+  }
+
+  $('#main').innerHTML = `
+  <section class="topic-hero">
+    <div class="wrap" style="position:relative">
+      <span class="mask-char" style="font-size:170px">${['制','兵','赋','文','外','图'][idx] || '专'}</span>
+      <span class="kicker">${t.no} · TOPIC</span>
+      <h1>${M.esc(t.name)}</h1>
+      <p class="lead">${M.esc(t.lead)}</p>
+      <div class="vol-themes" style="margin-top:18px">
+        ${t.sub.split(' · ').map(s => `<span class="tag">${M.esc(s)}</span>`).join('')}
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="t-body" style="max-width:var(--r-width);margin:0 auto">${blocks()}</div>
+
+    <div style="max-width:var(--r-width);margin:40px auto 0">
+      <h2 style="font-family:var(--serif);font-size:18px;letter-spacing:.1em;padding-left:12px;border-left:2px solid var(--zhu);margin:0 0 14px">相关篇目</h2>
+      <div class="ch-list" style="border-top:0">
+        ${(t.chapters||[]).map(cid => { const c = M.chapter(cid); if (!c) return ''; const v = M.vol(c.vol);
+          return `<a class="ch-item" href="read.html?ch=${c.id}" style="padding:14px 4px">
+            <span class="ch-num" style="font-size:18px">${String(c.no).padStart(2,'0')}</span>
+            <span><span class="ch-t" style="font-size:15.5px">${M.esc(c.title)}</span>
+            <span class="ch-s">${v.no} · ${M.esc(v.title)} · ${c.years}</span></span>
+            <span class="ch-meta">${c.minutes} 分钟</span></a>`; }).join('')}
+      </div>
+    </div>
+
+    <div class="pn-nav" style="max-width:var(--r-width);margin:36px auto 0">
+      ${prev ? `<a class="pn" href="topic.html?id=${prev.id}"><span class="pn-dir">上一个专题</span><span class="pn-t">${M.esc(prev.name)}</span></a>` : '<span></span>'}
+      ${next ? `<a class="pn next" href="topic.html?id=${next.id}"><span class="pn-dir">下一个专题</span><span class="pn-t">${M.esc(next.name)}</span></a>` : '<span></span>'}
+    </div>
+  </section>`;
+
+  M.reveal();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>卷宗 · 明朝那些事儿</title>
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<main id="main"></main>
+<script src="assets/js/data/volumes.js"></script>
+<script src="assets/js/data/people.js"></script>
+<script src="assets/js/data/topics.js"></script>
+<script src="assets/js/data/chapters-1.js"></script>
+<script src="assets/js/data/chapters-2.js"></script>
+<script src="assets/js/data/chapters-3.js"></script>
+<script src="assets/js/core.js"></script>
+<script>
+(function(){
+  const M = window.MING, $ = s => document.querySelector(s);
+  M.chrome('home');
+
+  const v = M.vol(M.qs('v') || 'v1');
+  if (!v) { $('#main').innerHTML = '<div class="wrap" style="padding:80px 0">没有找到这一卷。<a href="index.html" style="color:var(--zhu)">返回长卷</a></div>'; return; }
+  document.title = v.no + ' ' + v.title + ' · 明朝那些事儿';
+
+  const chs = M.chaptersOf(v.id);
+  const idx = M.volumes.findIndex(x => x.id === v.id);
+  const prev = M.volumes[idx - 1], next = M.volumes[idx + 1];
+
+  $('#main').innerHTML = `
+  <section class="vol-hero">
+    <div class="wrap" style="position:relative">
+      <span class="big-no">${['壹','贰','叁','肆','伍','陆','柒','捌'][idx] || ''}</span>
+      <span class="kicker">${v.no} · VOLUME ${['I','II','III','IV','V','VI','VII','VIII'][idx] || ''}</span>
+      <h1>${M.esc(v.title)}</h1>
+      <p class="years">${v.era}　${v.years}</p>
+      ${v.intro.map(p => `<p class="intro-p">${M.esc(p)}</p>`).join('')}
+      <div class="vol-themes">${v.themes.map(t => `<span class="tag">${M.esc(t)}</span>`).join('')}</div>
+    </div>
+  </section>
+
+  <section class="wrap" style="padding-top:34px">
+    <div class="sec-head">
+      <h2 class="sec-title">本卷篇目<small>${chs.length} 篇 · 约 ${chs.reduce((a,c)=>a+(c.minutes||0),0)} 分钟</small></h2>
+      ${next ? `<a class="sec-more" href="volume.html?v=${next.id}">下一卷 · ${next.title} →</a>` : ''}
+    </div>
+    <div class="ch-list">
+      ${chs.map(c => `<a class="ch-item" href="read.html?ch=${c.id}">
+        <span class="ch-num">${String(c.no).padStart(2,'0')}</span>
+        <span>
+          <span class="ch-t">${M.esc(c.title)}</span>
+          <span class="ch-s">${M.esc(c.subtitle || '')}</span>
+        </span>
+        <span class="ch-meta">${c.years} · ${c.minutes} 分钟</span>
+      </a>`).join('')}
+    </div>
+    <div class="pending-note">
+      <b>编纂说明：</b>本卷为持续编纂中的长卷，已完成篇目如上。后续篇目将按“背景—正文—人物—转折—补遗—评价”的同一结构陆续补入；
+      在篇目补齐之前，相关史事可在<a href="timeline.html" style="color:var(--zhu);border-bottom:1px solid rgba(156,43,35,.3)">时间轴</a>与<a href="topics.html" style="color:var(--zhu);border-bottom:1px solid rgba(156,43,35,.3)">背景专题</a>中先读到。
+    </div>
+  </section>
+
+  <section class="wrap" style="padding-top:48px">
+    <div class="sec-head"><h2 class="sec-title">本卷人物<small>WHO MATTERS HERE</small></h2>
+      <a class="sec-more" href="people.html">全部档案</a></div>
+    <div class="p-grid">
+      ${(v.people||[]).map(id => M.person(id)).filter(Boolean).map(M.personCard).join('')}
+    </div>
+  </section>
+
+  <section class="wrap" style="padding-top:44px">
+    <div class="pn-nav">
+      ${prev ? `<a class="pn" href="volume.html?v=${prev.id}"><span class="pn-dir">上一卷</span><span class="pn-t">${prev.no} ${prev.title}</span></a>` : '<span></span>'}
+      ${next ? `<a class="pn next" href="volume.html?v=${next.id}"><span class="pn-dir">下一卷</span><span class="pn-t">${next.no} ${next.title}</span></a>` : '<span></span>'}
+    </div>
+  </section>`;
+
+  M.reveal();
+})();
+</script>
+</body>
+</html>

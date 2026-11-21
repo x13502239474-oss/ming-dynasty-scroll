@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>阅读 · 明朝那些事儿</title>
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+<style>
+  .reader-wrap{width:100%;max-width:calc(var(--r-width) + 56px);margin:0 auto;padding:0 24px}
+  @media (max-width:600px){.reader-wrap{padding:0 20px}}
+  .rh-back{display:grid;place-items:center;width:38px;height:38px;border:0;background:none;color:var(--ink-3);cursor:pointer}
+  .rh-back svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.6}
+  .reader-head .icon-btn{width:38px;height:38px}
+  .reader-head .icon-btn svg{width:18px;height:18px}
+  .ch-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+  .tool{
+    display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;
+    border:1px solid var(--line);border-radius:2px;background:transparent;
+    font-size:12px;letter-spacing:.06em;color:var(--ink-3);cursor:pointer;transition:.16s;
+  }
+  .tool:hover{border-color:var(--zhu);color:var(--zhu)}
+  .tool.on{background:var(--zhu);border-color:var(--zhu);color:#FBF6EA}
+  .tool svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.6}
+  .end-block{margin-top:52px;padding-top:26px;border-top:1px solid var(--line-2)}
+  .end-t{font-family:var(--kai);font-size:12px;letter-spacing:.26em;color:var(--gold);margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="top-progress" id="prog"></div>
+
+<header class="reader-head">
+  <a class="rh-back js-toc" href="javascript:void(0)" aria-label="目录">
+    <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+  </a>
+  <div class="rh-title"><span class="rh-vol" id="rhVol"></span><span id="rhTitle">正在展开</span></div>
+  <button class="icon-btn js-find" aria-label="章内查找">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+  </button>
+  <button class="icon-btn js-set" aria-label="阅读设置">
+    <svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>
+  </button>
+</header>
+
+<main id="main"></main>
+
+<div class="findbar" id="findbar">
+  <input type="search" id="finput" placeholder="在本篇中查找…" autocomplete="off">
+  <span class="fcount" id="fcount">0 / 0</span>
+  <button class="icon-btn" id="fprev" aria-label="上一个"><svg viewBox="0 0 24 24"><path d="M14 6l-6 6 6 6"/></svg></button>
+  <button class="icon-btn" id="fnext" aria-label="下一个"><svg viewBox="0 0 24 24"><path d="M10 6l6 6-6 6"/></svg></button>
+  <button class="icon-btn" id="fclose" aria-label="关闭"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+</div>
+
+<div class="mask" id="mask"></div>
+<aside class="drawer left" id="toc">
+  <div class="drawer-head"><h3>全书目录</h3>
+    <button class="icon-btn js-close" aria-label="关闭"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="drawer-body" id="tocBody"></div>
+</aside>
+
+<aside class="drawer" id="settings">
+  <div class="drawer-head"><h3>阅读设置</h3>
+    <button class="icon-btn js-close" aria-label="关闭"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="drawer-body">
+    <div class="set-row">
+      <div class="set-lab"><span>字号</span><span id="labSize"></span></div>
+      <div class="seg" id="segSize">
+        <button data-size="16">小</button><button data-size="17.5">标准</button>
+        <button data-size="19">大</button><button data-size="21">特大</button>
+      </div>
+    </div>
+    <div class="set-row">
+      <div class="set-lab"><span>行距</span><span id="labLh"></span></div>
+      <div class="seg" id="segLh">
+        <button data-lh="1.8">紧凑</button><button data-lh="1.95">标准</button><button data-lh="2.15">宽松</button>
+      </div>
+    </div>
+    <div class="set-row">
+      <div class="set-lab"><span>版心宽度</span><span id="labW"></span></div>
+      <div class="seg" id="segW">
+        <button data-w="32">窄</button><button data-w="37">标准</button><button data-w="43">宽</button>
+      </div>
+    </div>
+    <div class="set-row">
+      <div class="set-lab"><span>正文字体</span><span></span></div>
+      <div class="seg" id="segFont">
+        <button data-font="serif" style="font-family:var(--serif)">宋体</button>
+        <button data-font="kai" style="font-family:var(--kai)">楷体</button>
+      </div>
+    </div>
+    <div class="set-row">
+      <div class="set-lab"><span>阅读模式</span><span></span></div>
+      <div class="seg" id="segTheme">
+        <button data-theme="light">宣纸</button><button data-theme="dark">墨夜</button>
+      </div>
+    </div>
+    <div class="set-row" style="padding-top:18px">
+      <p style="font-size:11.5px;color:var(--ink-4);line-height:1.9;margin:0">
+        设置会保存在本机。手机端建议字号「标准」、宽度「标准」；桌面上可适当加宽版心。</p>
+    </div>
+  </div>
+</aside>
+
+<div class="reader-tip" id="tip"></div>
+
+<script src="assets/js/data/volumes.js"></script>
+<script src="assets/js/data/people.js"></script>
+<script src="assets/js/data/topics.js"></script>
+<script src="assets/js/data/chapters-1.js"></script>
+<script src="assets/js/data/chapters-2.js"></script>
+<script src="assets/js/data/chapters-3.js"></script>
+<script src="assets/js/core.js"></script>
+<script>
+(function(){
+  const M = window.MING, $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
+  M.reader.apply();
+
+  const id = M.qs('ch') || (M.pos.last() ? M.pos.last().id : 'ch01');
+  const ch = M.chapter(id) || M.chapters[0];
+  const vol = M.vol(ch.vol);
+  const list = M.chapters.slice().sort((a,b)=>a.no-b.no);
+  const i = list.findIndex(c => c.id === ch.id);
+  const prev = list[i-1], next = list[i+1];
+
+  document.title = ch.title + ' · ' + vol.no + ' · 明朝那些事儿';
+  $('#rhVol').textContent = vol.no + ' · ' + vol.title;
+  $('#rhTitle').textContent = ch.title;
+
+  /* ---------- 渲染正文 ---------- */
+  let st = { count: {} };
+  function renderBlocks(){
+    return ch.blocks.map((b, k) => {
+      if (b.t === 'h') return `<h2 id="sec${k}"><span class="h-no">${M.esc(b.k||'')}</span>${M.esc(b.x)}</h2>`;
+      if (b.t === 'p') return `<p>${M.autolink(b.x, st)}</p>`;
+      if (b.t === 'q') return `<blockquote><p>${M.autolink(b.x, st)}</p>${b.cite?`<cite>${M.esc(b.cite)}</cite>`:''}</blockquote>`;
+      if (b.t === 'note') return `<div class="callout ${/辨析|争议/.test(b.title||'')?'caution':''}">
+        <div class="callout-t">${M.esc(b.title || '补遗')}</div>
+        <p>${M.autolink(b.x, st)}</p></div>`;
+      if (b.t === 'ul') return `<ul>${b.items.map(x=>`<li>${M.autolink(x, st)}</li>`).join('')}</ul>`;
+      if (b.t === 'topic') { const t = M.topic(b.id); return t ? `<a class="inline-topic" href="topic.html?id=${t.id}">
+        <span class="it-l">专题</span><span class="it-n">${M.esc(t.name)}　<span style="color:var(--ink-4);font-size:.85em">${M.esc(t.sub)}</span></span>
+        <span class="it-a">→</span></a>` : ''; }
+      return '';
+    }).join('');
+  }
+
+  const fav = M.fav.has(ch.id);
+  $('#main').innerHTML = `
+  <div class="reader-wrap">
+    <div class="ch-head">
+      <div class="ch-vol-lab">${vol.no} · ${M.esc(vol.title)}　${ch.years}</div>
+      <h1 class="ch-h1">${M.esc(ch.title)}</h1>
+      <p class="ch-sub">${M.esc(ch.subtitle||'')}</p>
+      <div class="ch-info">
+        <span>第 ${String(ch.no).padStart(2,'0')} 篇</span>
+        <span>约 ${ch.minutes} 分钟</span>
+        <span>${(ch.tags||[]).join(' · ')}</span>
+      </div>
+      <div class="ch-tools">
+        <button class="tool ${fav?'on':''}" id="btnFav">
+          <svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4.5L6 21z"/></svg><span>${fav?'已收藏':'收藏'}</span></button>
+        <button class="tool" id="btnMark">
+          <svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h6M9 16h6"/></svg><span>书签</span></button>
+        <button class="tool" id="btnFind">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><span>篇内查找</span></button>
+      </div>
+      <p class="ch-lead">${M.esc(ch.lead||'')}</p>
+    </div>
+
+    <article class="article" id="article"><div class="article-inner">${renderBlocks()}</div></article>
+
+    <div class="end-block">
+      <div class="end-t">本 篇 涉 及</div>
+      <div class="inline-people">
+        <div class="ip-row">
+          ${(ch.people||[]).map(pid => M.person(pid)).filter(Boolean).map(p => `
+            <a class="ip-card" href="person.html?id=${p.id}">
+              <span class="seal-face">${M.esc(M.sealChar(p))}</span>
+              <span><span class="ip-n">${M.esc(p.name)}</span><span class="ip-r">${M.esc(p.title)}</span></span>
+            </a>`).join('')}
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:22px">
+        ${(ch.topics||[]).map(tid => { const t = M.topic(tid); return t ? `<a class="chip" href="topic.html?id=${t.id}">专题 · ${M.esc(t.name)}</a>` : ''; }).join('')}
+        <a class="chip" href="topic.html?id=t6">历史地图</a>
+      </div>
+      <p style="font-size:11.5px;color:var(--ink-4);line-height:1.95;margin:22px 0 0;letter-spacing:.02em">
+        本文为原创整理，参考《明史》《明实录》《明史纪事本末》及相关研究；文中「史实辨析」用于区分史料记载、学界争议与后世演绎。如发现史实错误，欢迎指出。</p>
+
+      <div class="ch-actions">
+        <button class="tool" id="btnFav2" style="height:34px"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4.5L6 21z"/></svg><span>${fav?'已收藏本篇':'收藏本篇'}</span></button>
+        <a class="tool" href="volume.html?v=${vol.id}" style="height:34px">本卷目录</a>
+        <a class="tool" href="javascript:window.scrollTo({top:0,behavior:'smooth'})" style="height:34px">回到篇首</a>
+      </div>
+    </div>
+
+    <div class="pn-nav" style="margin-top:26px">
+      ${prev ? `<a class="pn" href="read.html?ch=${prev.id}"><span class="pn-dir">上一篇</span><span class="pn-t">${M.esc(prev.title)}</span></a>` : '<span></span>'}
+      ${next ? `<a class="pn next" href="read.html?ch=${next.id}"><span class="pn-dir">下一篇</span><span class="pn-t">${M.esc(next.title)}</span></a>`
+              : `<a class="pn next" href="volume.html?v=${vol.id}"><span class="pn-dir">本卷结束</span><span class="pn-t">回到 ${vol.no} 目录</span></a>`}
+    </div>
+  </div>`;
+
+  const article = $('#article');
+  const originalHTML = article.innerHTML;
+
+  /* ---------- 收藏 ---------- */
+  function syncFav(on){
+    const b1 = $('#btnFav'), b2 = $('#btnFav2');
+    if (b1) { b1.classList.toggle('on', on); b1.querySelector('span').textContent = on ? '已收藏' : '收藏'; }
+    if (b2) b2.querySelector('span').textContent = on ? '已收藏本篇' : '收藏本篇';
+  }
+  [$('#btnFav'), $('#btnFav2')].forEach(b => b && b.addEventListener('click', () => {
+    const on = M.fav.toggle(ch.id); syncFav(on);
+    tip(on ? '已加入收藏' : '已取消收藏');
+  }));
+
+  /* ---------- 书签 ---------- */
+  $('#btnMark').addEventListener('click', () => {
+    const r = scrollRatio();
+    const p = Array.from(article.querySelectorAll('p')).find(el => el.getBoundingClientRect().top > 100);
+    M.mark.add(ch.id, r, p ? p.textContent : ch.title);
+    tip('已记录书签');
+  });
+
+  /* ---------- 目录 ---------- */
+  $('#tocBody').innerHTML = `<div class="toc-group" style="border-bottom:1px solid var(--line-2);padding-bottom:12px;margin-bottom:6px">
+      <a class="toc-link" href="index.html"><i>←</i><span>返回长卷</span></a>
+      <a class="toc-link" href="timeline.html"><i>年</i><span>历史时间轴</span></a>
+      <a class="toc-link" href="people.html"><i>人</i><span>人物档案</span></a>
+      <a class="toc-link" href="topics.html"><i>专</i><span>背景专题</span></a>
+    </div>` + M.volumes.map(v => {
+    const cs = M.chaptersOf(v.id);
+    return `<div class="toc-group">
+      <div class="toc-vol">${v.no} · ${v.title}</div>
+      ${cs.map(c => `<a class="toc-link ${c.id===ch.id?'on':''}" href="read.html?ch=${c.id}">
+        <i>${String(c.no).padStart(2,'0')}</i><span>${M.esc(c.title)}</span></a>`).join('')}
+      ${cs.length ? '' : '<a class="toc-link pending"><i>—</i><span>本篇编纂中</span></a>'}
+    </div>`;
+  }).join('');
+
+  /* ---------- 抽屉 ---------- */
+  const mask = $('#mask');
+  function openDrawer(el){ el.classList.add('open'); mask.classList.add('on'); }
+  function closeAll(){
+    $$('.drawer').forEach(d => d.classList.remove('open'));
+    mask.classList.remove('on');
+  }
+  $('.js-toc').addEventListener('click', () => openDrawer($('#toc')));
+  $('.js-set').addEventListener('click', () => { syncSeg(); openDrawer($('#settings')); });
+  $$('.js-close').forEach(b => b.addEventListener('click', closeAll));
+  mask.addEventListener('click', closeAll);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAll(); closeFind(); } });
+
+  /* ---------- 设置 ---------- */
+  function syncSeg(){
+    const s = M.reader.get();
+    $$('#segSize button').forEach(b => b.classList.toggle('on', +b.dataset.size === s.size));
+    $$('#segLh button').forEach(b => b.classList.toggle('on', +b.dataset.lh === s.lh));
+    $$('#segW button').forEach(b => b.classList.toggle('on', +b.dataset.w === s.width));
+    $$('#segFont button').forEach(b => b.classList.toggle('on', b.dataset.font === s.font));
+    $$('#segTheme button').forEach(b => b.classList.toggle('on', b.dataset.theme === document.documentElement.getAttribute('data-theme')));
+    $('#labSize').textContent = s.size + 'px';
+    $('#labLh').textContent = s.lh;
+    $('#labW').textContent = s.width + 'em';
+  }
+  $('#segSize').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; M.reader.set({size:+b.dataset.size}); syncSeg(); });
+  $('#segLh').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; M.reader.set({lh:+b.dataset.lh}); syncSeg(); });
+  $('#segW').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; M.reader.set({width:+b.dataset.w}); syncSeg(); });
+  $('#segFont').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; M.reader.set({font:b.dataset.font}); syncSeg(); });
+  $('#segTheme').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (document.documentElement.getAttribute('data-theme') !== b.dataset.theme) M.toggleTheme();
+    syncSeg();
+  });
+
+  /* ---------- 提示 ---------- */
+  let tipT;
+  function tip(msg){
+    const el = $('#tip'); el.textContent = msg; el.classList.add('on');
+    clearTimeout(tipT); tipT = setTimeout(() => el.classList.remove('on'), 1800);
+  }
+
+  /* ---------- 进度 ---------- */
+  function scrollRatio(){
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    return h > 40 ? Math.min(1, Math.max(0, window.scrollY / h)) : 1;
+  }
+  let raf = 0, lastSave = 0;
+  function onScroll(){
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      const r = scrollRatio();
+      $('#prog').style.width = (r*100).toFixed(1) + '%';
+      const now = Date.now();
+      if (now - lastSave > 900) { lastSave = now; M.pos.set(ch.id, r); }
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('beforeunload', () => M.pos.set(ch.id, scrollRatio()));
+  window.addEventListener('pagehide', () => M.pos.set(ch.id, scrollRatio()));
+
+  /* ---------- 恢复位置 ---------- */
+  M.pos.touch(ch.id);
+  const saved = M.pos.get(ch.id);
+  const fromTop = M.qs('from') === 'top';
+  if (!fromTop && saved > 0.02) {
+    requestAnimationFrame(() => {
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      window.scrollTo({ top: h * saved, behavior: 'auto' });
+      tip('已回到上次读到 ' + Math.round(saved*100) + '%');
+    });
+  } else {
+    window.scrollTo(0, 0);
+  }
+  onScroll();
+
+  /* ---------- 篇内查找 ---------- */
+  const findbar = $('#findbar'), finput = $('#finput'), fcount = $('#fcount');
+  let marks = [], cur = -1;
+  function openFind(){ findbar.classList.add('on'); setTimeout(()=>finput.focus(), 60); }
+  function closeFind(){ findbar.classList.remove('on'); clearMarks(); }
+  $('#btnFind').addEventListener('click', openFind);
+  $('.js-find').addEventListener('click', openFind);
+  $('#fclose').addEventListener('click', closeFind);
+
+  function clearMarks(){
+    if (!marks.length) return;
+    article.innerHTML = originalHTML;
+    // 重建引用
+    marks = []; cur = -1; fcount.textContent = '0 / 0';
+  }
+  function applyMarks(q){
+    article.innerHTML = originalHTML;
+    marks = []; cur = -1;
+    if (!q) { fcount.textContent = '0 / 0'; return; }
+    const walker = document.createTreeWalker(article, NodeFilter.SHOW_TEXT, {
+      acceptNode(n){
+        if (!n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        if (n.parentNode.closest('.h-no, script, style')) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    const nodes = []; let n;
+    while ((n = walker.nextNode())) nodes.push(n);
+    nodes.forEach(node => {
+      const txt = node.nodeValue;
+      const low = txt.toLowerCase(), ql = q.toLowerCase();
+      let pos = low.indexOf(ql);
+      if (pos < 0) return;
+      const frag = document.createDocumentFragment();
+      let last = 0;
+      while (pos >= 0) {
+        frag.appendChild(document.createTextNode(txt.slice(last, pos)));
+        const mk = document.createElement('mark');
+        mk.className = 'hl'; mk.textContent = txt.slice(pos, pos + q.length);
+        frag.appendChild(mk); marks.push(mk);
+        last = pos + q.length;
+        pos = low.indexOf(ql, last);
+      }
+      frag.appendChild(document.createTextNode(txt.slice(last)));
+      node.parentNode.replaceChild(frag, node);
+    });
+    fcount.textContent = marks.length ? '1 / ' + marks.length : '0 / 0';
+    if (marks.length) { cur = 0; marks[0].classList.add('cur'); marks[0].scrollIntoView({block:'center',behavior:'smooth'}); }
+  }
+  function step(dir){
+    if (!marks.length) return;
+    marks[cur].classList.remove('cur');
+    cur = (cur + dir + marks.length) % marks.length;
+    marks[cur].classList.add('cur');
+    marks[cur].scrollIntoView({block:'center',behavior:'smooth'});
+    fcount.textContent = (cur+1) + ' / ' + marks.length;
+  }
+  let ft;
+  finput.addEventListener('input', () => {
+    clearTimeout(ft);
+    ft = setTimeout(() => applyMarks(finput.value.trim()), 220);
+  });
+  finput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); if (marks.length) step(e.shiftKey ? -1 : 1); else applyMarks(finput.value.trim()); }
+  });
+  $('#fnext').addEventListener('click', () => step(1));
+  $('#fprev').addEventListener('click', () => step(-1));
+
+  /* ---------- 快捷键 ---------- */
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.metaKey || e.ctrlKey) return;
+    if (e.key === 'j' && next) location.href = 'read.html?ch=' + next.id;
+    if (e.key === 'k' && prev) location.href = 'read.html?ch=' + prev.id;
+    if (e.key === '/') { e.preventDefault(); openFind(); }
+  });
+
+  M.reveal();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>历史时间轴 · 明朝那些事儿</title>
+<meta name="description" content="从至正十一年红巾军起义到康熙二十二年明郑降清，59 个关键节点，串起大明二百七十六年。">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<main>
+  <section class="page-head">
+    <div class="wrap" style="position:relative">
+      <span class="mask-char">年</span>
+      <span class="kicker">年表 · CHRONOLOGY</span>
+      <h1>一条从 1351 到 1683 的线</h1>
+      <p>历史不是一条平滑的曲线。它有时几十年没什么变化，有时一个月里发生的事比十年还多。这张年表只挑出那些真正改变了走向的节点，并按八卷分段。</p>
+    </div>
+  </section>
+
+  <section class="tl-wrap wrap">
+    <div class="tl-filter" id="filter"></div>
+    <div id="list"></div>
+  </section>
+</main>
+
+<script src="assets/js/data/volumes.js"></script>
+<script src="assets/js/data/people.js"></script>
+<script src="assets/js/data/topics.js"></script>
+<script src="assets/js/data/chapters-1.js"></script>
+<script src="assets/js/data/chapters-2.js"></script>
+<script src="assets/js/data/chapters-3.js"></script>
+<script src="assets/js/core.js"></script>
+<script>
+(function(){
+  const M = window.MING, $ = s => document.querySelector(s);
+  M.chrome('timeline');
+
+  /* 归组 */
+  const groups = M.volumes.map(v => ({ v, items: [] }));
+  const byVol = {}; groups.forEach(g => byVol[g.v.id] = g);
+  M.timeline.forEach(t => {
+    const c = t.ch ? M.chapter(t.ch) : null;
+    let vid = c ? c.vol : 'v1';
+    if (!byVol[vid]) vid = 'v1';
+    byVol[vid].items.push(t);
+  });
+  groups.forEach(g => g.items.sort((a,b)=>a.y-b.y));
+
+  /* 过滤条 */
+  const chips = [`<button class="chip on" data-v="all">全部</button>`]
+    .concat(M.volumes.map(v => `<button class="chip" data-v="${v.id}">${v.no} ${v.title}</button>`)).join('');
+  $('#filter').innerHTML = chips;
+
+  function render(sel){
+    const html = groups.filter(g => sel === 'all' || g.v.id === sel).map(g => {
+      if (!g.items.length) return '';
+      return `<div class="tl-era">
+        <div class="tl-era-head">
+          <span class="tl-era-no">${g.v.no}</span>
+          <span class="tl-era-name">${g.v.title}</span>
+          <span class="tl-era-year">${g.v.years}</span>
+        </div>
+        <div class="tl-items">
+          ${g.items.map(t => {
+            const c = t.ch ? M.chapter(t.ch) : null;
+            return `<div class="tl-item ${t.hot ? 'hot' : ''}">
+              <div class="tl-item-year">${t.y} · ${t.dyn}</div>
+              <div class="tl-item-title">${M.esc(t.t)}
+                ${c ? `<a class="link-ch" href="read.html?ch=${c.id}">读本篇</a>` : ''}</div>
+              <p class="tl-item-desc">${M.esc(t.d)}</p>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }).join('');
+    $('#list').innerHTML = html || '<p style="color:var(--ink-4);font-size:13px">暂无条目。</p>';
+  }
+  render('all');
+
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+    b.classList.add('on');
+    render(b.dataset.v);
+  });
+
+  M.reveal();
+})();
+</script>
+</body>
+</html>
