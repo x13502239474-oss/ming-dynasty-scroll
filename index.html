@@ -212,6 +212,8 @@
     ['zhuhouzhong', '世宗', '嘉靖 1521—1566'],
     ['zhuzaihou', '穆宗', '隆庆 1566—1572'],
     ['zhuyijun', '神宗', '万历 1572—1620'],
+    ['zhuchangluo', '光宗', '泰昌 1620'],
+    ['zhuyoujiao', '熹宗', '天启 1620—1627'],
     ['zhuyoujian', '思宗', '崇祯 1627—1644'],
   ];
   $('#empRow').innerHTML = EMP.map(([id, miao, reign]) => {
@@ -220,10 +222,7 @@
       <span class="emp-seal">${p ? M.sealChar(p) : '明'}</span>
       <span><span class="emp-name">${p ? p.name : '待补'} <span style="font-size:10.5px;color:var(--ink-4)">${miao}</span></span>
       <span class="emp-meta">${reign}</span></span></a>`;
-  }).join('') + `<a class="emp pending" href="timeline.html">
-      <span class="emp-seal">＋</span>
-      <span><span class="emp-name">光宗 · 熹宗</span>
-      <span class="emp-meta">泰昌 1620 · 天启 1620—1627</span></span></a>`;
+  }).join('');
 
   /* 专题 */
   $('#topicGrid').innerHTML = M.topics.map(M.topicCard).join('');
